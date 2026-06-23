@@ -1,0 +1,74 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --sky: #4A90D9;
+  --sky-dark: #2C6FAC;
+  --sky-light: #EBF4FF;
+  --mint: #3DBD8A;
+  --mint-dark: #2A9468;
+  --mint-light: #E6F9F2;
+  --coral: #F26B5B;
+  --coral-light: #FEF0EE;
+  --sun: #F5A623;
+  --sun-light: #FEF6E7;
+  --ink: #1A2340;
+  --ink-soft: #4A5568;
+  --border: #D9E4F0;
+  --white: #FFFFFF;
+  --bg: #F0F6FF;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input, textarea, select {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+  background: var(--white);
+  color: var(--ink);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--sky);
+}
