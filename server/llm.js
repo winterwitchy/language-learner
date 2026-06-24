@@ -15,13 +15,47 @@ const LEVEL_GUIDES = {
 
 
 async function generateDialogue({ scenario, level, language }) {
-    const guide = LEVEL_GUIDES[level];
+  const guide = LEVEL_GUIDES[level];
+
+  const systemPrompt = `You are a language tutor creating dialogue practice for K-12 students.
+Return ONLY valid JSON. No markdown, no explanation, no code fences.
+Use this exact shape:
+{
+  "dialogue": [
+    { "speaker": "npc", "line": "string" },
+    { "speaker": "user", "prompt": "string", "hint": "string or null" }
+  ]
+}
+Rules:
+- Alternate between npc and user turns. Always start with npc.
+- Include exactly ${guide.turns} user turns.
+- Vocabulary: ${guide.vocab}.
+- Hints: ${guide.hints}.
+- Keep content appropriate for school-age children.`;
+
+  const userPrompt = `Scenario: "${scenario}" in ${language} at level ${level}.
+Generate a short practice dialogue where the student plays the visitor.`;
+
+  try {
+    const message = await client.messages.create({
+      model: MODEL,
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+    });
+    const raw = message.content?.[0]?.text ?? "";
+    return parseDialogueResponse(raw);
+  } catch (err) {
+    console.error("generateDialogue error:", err.message);
+    return { ok: false, error: "Could not reach the AI service. Please try again." };
+  }
 }
 
 
 function parseDialogueResponse(raw) {
   try {
-    const parsed = JSON.parse(raw.trim());
+    const cleaned = raw.trim().replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    const parsed = JSON.parse(cleaned);
     if (!Array.isArray(parsed.dialogue) || parsed.dialogue.length === 0) {
       throw new Error("dialogue array missing or empty");
     }
@@ -79,7 +113,8 @@ Evaluate their answer.`;
 
 function parseEvaluationResponse(raw) {
   try {
-    const parsed = JSON.parse(raw.trim());
+    const cleaned = raw.trim().replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    const parsed = JSON.parse(cleaned);
 
     if (typeof parsed.correct !== "boolean") throw new Error("correct field missing");
     if (typeof parsed.feedback !== "string") throw new Error("feedback field missing");
@@ -102,41 +137,4 @@ function parseEvaluationResponse(raw) {
   }
 }
 
-
-const systemPrompt = `You are a language tutor creating dialogue practice for K-12 students.
-Return ONLY valid JSON. No markdown, no explanation, no code fences.
-Use this exact shape:
-{
-  "dialogue": [
-    { "speaker": "npc", "line": "string" },
-    { "speaker": "user", "prompt": "string", "hint": "string or null" }
-  ]
-}
-Rules:
-- Alternate between npc and user turns. Always start with npc.
-- Include exactly ${guide.turns} user turns.
-- Vocabulary: ${guide.vocab}.
-- Hints: ${guide.hints}.
-- Keep content appropriate for school-age children.`;
-
-
-const userPrompt = `Scenario: "${scenario}" in ${language} at level ${level}.
-Generate a short practice dialogue where the student plays the visitor.`;
-
-
-try {
-    const message = await client.messages.create({
-      model: MODEL,
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    });
-    const raw = message.content?.[0]?.text ?? "";
-    return parseDialogueResponse(raw);
-  } catch (err) {
-    console.error("generateDialogue error:", err.message);
-    return { ok: false, error: "Could not reach the AI service. Please try again." };
-  }
-
-
-  module.exports = { generateDialogue, evaluateAnswer, parseDialogueResponse, parseEvaluationResponse };
+module.exports = { generateDialogue, evaluateAnswer, parseDialogueResponse, parseEvaluationResponse };
