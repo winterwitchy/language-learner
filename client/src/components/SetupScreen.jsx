@@ -50,7 +50,9 @@ export default function SetupScreen({ onStart }) {
                 onClick={() => setLanguage(lang)}
                 style={{
                   ...styles.pill,
-                  ...(language === lang ? styles.pillActive : {}),
+                  border: language === lang ? "2px solid #4A90D9" : "2px solid transparent",
+                  background: language === lang ? "#EBF4FF" : "#F0F6FF",
+                  color: language === lang ? "#2C6FAC" : "#1A2340",
                 }}
               >
                 {lang}
@@ -68,7 +70,9 @@ export default function SetupScreen({ onStart }) {
                 onClick={() => setLevel(lvl)}
                 style={{
                   ...styles.pill,
-                  ...(level === lvl ? styles.pillActive : {}),
+                  border: level === lvl ? "2px solid #4A90D9" : "2px solid transparent",
+                  background: level === lvl ? "#EBF4FF" : "#F0F6FF",
+                  color: level === lvl ? "#2C6FAC" : "#1A2340",
                 }}
               >
                 <span style={{ fontWeight: 800 }}>{lvl}</span>
@@ -89,7 +93,8 @@ export default function SetupScreen({ onStart }) {
                 onClick={() => setScenario(s.id)}
                 style={{
                   ...styles.scenarioCard,
-                  ...(scenario === s.id ? styles.scenarioActive : {}),
+                  border: scenario === s.id ? "2px solid #4A90D9" : "2px solid transparent",
+                  background: scenario === s.id ? "#EBF4FF" : "#F0F6FF",
                 }}
               >
                 <div style={styles.scenarioLabel}>{s.label}</div>
