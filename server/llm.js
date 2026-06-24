@@ -38,7 +38,7 @@ Generate a short practice dialogue where the student plays the visitor.`;
 
   try {
     const message = await client.messages.create({
-      model: MODEL,
+      model: language === "Turkish" || language === "Russian" ? "claude-sonnet-4-6" : MODEL,
       max_tokens: 1024,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
@@ -96,7 +96,7 @@ Evaluate their answer.`;
 
   try {
     const message = await client.messages.create({
-      model: MODEL,
+      model: language === "Turkish" || language === "Russian" ? "claude-sonnet-4-6" : MODEL,
       max_tokens: 512,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
