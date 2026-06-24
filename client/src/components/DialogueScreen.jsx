@@ -317,6 +317,8 @@ export default function DialogueScreen({
   isEvaluating,
   awaitingInput,
   score,
+  answersMap,
+  turnHistory,
   totalUserTurns,
   completedUserTurns,
   sessionConfig,
@@ -392,25 +394,27 @@ export default function DialogueScreen({
 
           if (turn.speaker === "user") {
             const isCurrentTurn = i === visibleTurns.length - 1;
+            const submittedAnswer = answersMap[i];
+            const turnResult = turnHistory[Object.keys(answersMap).indexOf(String(i))]?.result;
 
             return (
               <div key={i} style={styles.userRow}>
                 <div style={styles.promptCard}>
                   <div style={styles.promptLabel}>Your turn</div>
                   <div style={styles.promptText}>{turn.prompt}</div>
-                  {turn.hint && !evaluation && (
+                  {turn.hint && isCurrentTurn && !evaluation && (
                     <div style={styles.hint}>💡 {turn.hint}</div>
                   )}
                 </div>
 
-                {isCurrentTurn && evaluation && (
+                {submittedAnswer && (!isCurrentTurn || evaluation) && (
                   <div style={styles.userBubbleWrap}>
                     <div style={{
                       ...styles.userBubble,
-                      borderColor: evaluation.result === "correct" ? "#3DBD8A" : evaluation.result === "partial" ? "#F5A623" : "#F26B5B",
-                      background: evaluation.result === "correct" ? "#E6F9F2" : evaluation.result === "partial" ? "#FEF6E7" : "#FEF0EE",
+                      borderColor: turnResult === "correct" ? "#3DBD8A" : turnResult === "partial" ? "#F5A623" : "#F26B5B",
+                      background: turnResult === "correct" ? "#E6F9F2" : turnResult === "partial" ? "#FEF6E7" : "#FEF0EE",
                     }}>
-                      {userInput}
+                      {submittedAnswer}
                     </div>
                     <div style={styles.userAvatar}>You</div>
                   </div>

@@ -13,6 +13,7 @@ export function useDialogue() {
   const [errorMessage, setErrorMessage] = useState("");
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [turnHistory, setTurnHistory] = useState([]);
+  const [answersMap, setAnswersMap] = useState({});
 
   const currentTurn = dialogue[stepIndex] ?? null;
 
@@ -40,6 +41,7 @@ export function useDialogue() {
     setEvaluation(null);
     setScore({ correct: 0, total: 0 });
     setTurnHistory([]);
+    setAnswersMap({});
     setErrorMessage("");
     setSessionConfig({ scenario, level, language });
 
@@ -63,6 +65,7 @@ export function useDialogue() {
     if (!currentTurn || currentTurn.speaker !== "user") return;
 
     setIsEvaluating(true);
+    setAnswersMap((prev) => ({ ...prev, [stepIndex]: userInput.trim() }));
     setEvaluation(null);
 
     const result = await evaluateAnswer({
@@ -120,6 +123,7 @@ export function useDialogue() {
     setErrorMessage("");
     setScore({ correct: 0, total: 0 });
     setTurnHistory([]);
+    setAnswersMap({});
   }, []);
 
 
@@ -140,6 +144,7 @@ export function useDialogue() {
     awaitingInput,
     score,
     turnHistory,
+    answersMap,
     sessionConfig,
     errorMessage,
     totalUserTurns,

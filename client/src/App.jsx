@@ -18,6 +18,7 @@ export default function App() {
     awaitingInput,
     score,
     turnHistory,
+    answersMap,
     sessionConfig,
     errorMessage,
     totalUserTurns,
@@ -54,6 +55,8 @@ export default function App() {
       isEvaluating={isEvaluating}
       awaitingInput={awaitingInput}
       score={score}
+      answersMap={answersMap}
+      turnHistory={turnHistory}
       totalUserTurns={totalUserTurns}
       completedUserTurns={score.total}
       sessionConfig={sessionConfig}
