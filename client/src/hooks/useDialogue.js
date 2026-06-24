@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { generateDialogue, evaluateAnswer } from "../api";
 
 
@@ -13,6 +13,24 @@ export function useDialogue() {
   const [errorMessage, setErrorMessage] = useState("");
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [turnHistory, setTurnHistory] = useState([]);
+
+  const currentTurn = dialogue[stepIndex] ?? null;
+
+  useEffect(() => {
+    if (status === "active" && currentTurn?.speaker === "npc" && !evaluation) {
+      const timer = setTimeout(() => {
+        setStepIndex((prev) => {
+          const next = prev + 1;
+          if (next >= dialogue.length) {
+            setStatus("complete");
+            return prev;
+          }
+          return next;
+        });
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [status, currentTurn, dialogue, evaluation]);
 
   const start = useCallback(async ({ scenario, level, language }) => {
     setStatus("loading");
@@ -104,7 +122,7 @@ export function useDialogue() {
     setTurnHistory([]);
   }, []);
 
-  const currentTurn = dialogue[stepIndex] ?? null;
+
   const awaitingInput = status === "active" && currentTurn?.speaker === "user" && !evaluation && !isEvaluating;
   const totalUserTurns = dialogue.filter((t) => t.speaker === "user").length;
   const visibleTurns = dialogue.slice(0, stepIndex + 1);
