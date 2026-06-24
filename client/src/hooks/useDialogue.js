@@ -74,12 +74,12 @@ export function useDialogue() {
     });
 
     const eval_ = result.ok
-      ? { correct: result.correct, feedback: result.feedback, betterAnswer: result.betterAnswer }
-      : { correct: true, feedback: "Good effort! Keep going.", betterAnswer: "" };
+      ? { result: result.result, feedback: result.feedback, betterAnswer: result.betterAnswer }
+      : { result: "partial", feedback: "Good effort! Keep going.", betterAnswer: "" };
 
     setEvaluation(eval_);
     setScore((prev) => ({
-      correct: prev.correct + (eval_.correct ? 1 : 0),
+      correct: prev.correct + (eval_.result === "correct" ? 1 : eval_.result === "partial" ? 0.5 : 0),
       total: prev.total + 1,
     }));
     setTurnHistory((prev) => [
@@ -87,7 +87,7 @@ export function useDialogue() {
       {
         prompt: currentTurn.prompt,
         userAnswer: userInput.trim(),
-        correct: eval_.correct,
+        result: eval_.result,
         feedback: eval_.feedback,
         betterAnswer: eval_.betterAnswer,
       },

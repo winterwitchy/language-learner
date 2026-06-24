@@ -407,8 +407,8 @@ export default function DialogueScreen({
                   <div style={styles.userBubbleWrap}>
                     <div style={{
                       ...styles.userBubble,
-                      borderColor: evaluation.correct ? "#3DBD8A" : "#F26B5B",
-                      background: evaluation.correct ? "#E6F9F2" : "#FEF0EE",
+                      borderColor: evaluation.result === "correct" ? "#3DBD8A" : evaluation.result === "partial" ? "#F5A623" : "#F26B5B",
+                      background: evaluation.result === "correct" ? "#E6F9F2" : evaluation.result === "partial" ? "#FEF6E7" : "#FEF0EE",
                     }}>
                       {userInput}
                     </div>
@@ -431,11 +431,11 @@ export default function DialogueScreen({
         {evaluation && !isEvaluating && (
           <div style={{
             ...styles.feedbackCard,
-            borderLeft: `4px solid ${evaluation.correct ? "#3DBD8A" : "#F26B5B"}`,
-            background: evaluation.correct ? "#E6F9F2" : "#FEF0EE",
+            borderLeft: `4px solid ${evaluation.result === "correct" ? "#3DBD8A" : evaluation.result === "partial" ? "#F5A623" : "#F26B5B"}`,
+            background: evaluation.result === "correct" ? "#E6F9F2" : evaluation.result === "partial" ? "#FEF6E7" : "#FEF0EE",
           }}>
             <div style={styles.feedbackIcon}>
-              {evaluation.correct ? "🎉" : "💪"}
+              {evaluation.result === "correct" ? "🎉" : evaluation.result === "partial" ? "🤔" : "😔"}
             </div>
             <div style={styles.feedbackBody}>
               <div style={styles.feedbackText}>{evaluation.feedback}</div>

@@ -42,7 +42,7 @@ export default function ResultsScreen({ score, turnHistory, sessionConfig, onRep
           <div style={styles.heroEmoji}>{tier.emoji}</div>
           <h1 style={{ ...styles.heroLabel, color: tier.color }}>{tier.label}</h1>
           <p style={styles.heroSub}>
-            You got <strong>{correct}</strong> out of <strong>{total}</strong> answers right
+            You got <strong>{correct}</strong> out of <strong>{total}</strong> points
           </p>
 
           <div style={styles.scoreRingWrap}>
@@ -81,13 +81,13 @@ export default function ResultsScreen({ score, turnHistory, sessionConfig, onRep
                   key={i}
                   style={{
                     ...styles.turnCard,
-                    borderLeft: `4px solid ${turn.correct ? "#3DBD8A" : "#F26B5B"}`,
+                    borderLeft: `4px solid ${turn.result === "correct" ? "#3DBD8A" : turn.result === "partial" ? "#F5A623" : "#F26B5B"}`,
                   }}
                 >
                   <div style={styles.turnHeader}>
                     <span style={styles.turnNumber}>Turn {i + 1}</span>
-                    <span style={turn.correct ? styles.correctBadge : styles.incorrectBadge}>
-                      {turn.correct ? "✓ Correct" : "✗ Needs work"}
+                    <span style={turn.result === "correct" ? styles.correctBadge : turn.result === "partial" ? styles.partialBadge : styles.incorrectBadge}>
+                      {turn.result === "correct" ? "✓ Correct" : turn.result === "partial" ? "~ Partial" : "✗ Needs work"}
                     </span>
                   </div>
                   <div style={styles.turnPrompt}>
@@ -217,6 +217,14 @@ const styles = {
     fontWeight: 700,
     color: "#2A9468",
     background: "#E6F9F2",
+    padding: "0.15rem 0.5rem",
+    borderRadius: 20,
+  },
+  partialBadge: {
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    color: "#B87A10",
+    background: "#FEF6E7",
     padding: "0.15rem 0.5rem",
     borderRadius: 20,
   },

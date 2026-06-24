@@ -7,10 +7,30 @@ const MODEL = "claude-haiku-4-5";
 
 
 const LEVEL_GUIDES = {
-    A1: { turns: 2, vocab: "very simple everyday words only", hints: "always include a large hint", feedback: "one sentence, very encouraging" },
-    A2: { turns: 3, vocab: "basic vocabulary, short sentences", hints: "include a sentence starter hint", feedback: "two sentences, encouraging" },
-    B1: { turns: 4, vocab: "everyday vocabulary with connectors like because, so, but", hints: "small hint only if prompt is complex", feedback: "two to three sentences, note what to improve" },
-    B2: { turns: 5, vocab: "natural idiomatic language", hints: "no hints", feedback: "detailed feedback on grammar and naturalness" },
+  A1: {
+    turns: 2,
+    vocab: "very simple everyday words only",
+    hints: "always include a large hint",
+    feedback: "one sentence, warm and encouraging, focus only on what was good. Be generous — any reasonable attempt is correct."
+  },
+  A2: {
+    turns: 3,
+    vocab: "basic vocabulary, short sentences",
+    hints: "include a sentence starter hint",
+    feedback: "two sentences — start with one positive, then clearly state one thing to improve. Mark as partial if the meaning is right but grammar is wrong."
+  },
+  B1: {
+    turns: 4,
+    vocab: "everyday vocabulary with connectors like because, so, but",
+    hints: "small hint only if prompt is complex",
+    feedback: "three sentences — acknowledge what worked, identify the specific grammar or vocabulary error, explain why it is wrong. Be direct. Mark as partial if incomplete or unnatural."
+  },
+  B2: {
+    turns: 5,
+    vocab: "natural idiomatic language",
+    hints: "no hints",
+    feedback: "be direct and precise. Identify every grammar, vocabulary, and naturalness issue. Do not soften criticism. Partial means noticeable errors but core meaning conveyed. Incorrect means wrong, off-topic, or incomprehensible."
+  },
 };
 
 
@@ -75,16 +95,18 @@ function parseDialogueResponse(raw) {
 async function evaluateAnswer({ scenario, level, language, prompt, userAnswer }) {
   const guide = LEVEL_GUIDES[level];
 
-  const systemPrompt = `You are a kind, encouraging language tutor for K-12 students.
+  const systemPrompt = `You are a language tutor for K-12 students.
 Return ONLY valid JSON. No markdown, no explanation, no code fences.
 Use this exact shape:
 {
-  "correct": boolean,
+  "result": "correct" | "partial" | "incorrect",
   "feedback": "string",
   "betterAnswer": "string"
 }
 Rules:
-- "correct" is true if the answer is a reasonable attempt. Be generous with young learners.
+- "correct": answer is natural, grammatically sound, and fulfills the prompt fully.
+- "partial": answer shows understanding but has grammar errors, missing elements, or unnatural phrasing.
+- "incorrect": answer is wrong, incomprehensible, or completely off-topic.
 - "feedback": ${guide.feedback}. Always start with something positive.
 - "betterAnswer": a natural model answer at ${level} level.
 - All content must be appropriate for school-age children.`;
@@ -116,13 +138,13 @@ function parseEvaluationResponse(raw) {
     const cleaned = raw.trim().replace(/^```json\n?/, "").replace(/\n?```$/, "");
     const parsed = JSON.parse(cleaned);
 
-    if (typeof parsed.correct !== "boolean") throw new Error("correct field missing");
+    if (!["correct", "partial", "incorrect"].includes(parsed.result)) throw new Error("result field invalid");
     if (typeof parsed.feedback !== "string") throw new Error("feedback field missing");
     if (typeof parsed.betterAnswer !== "string") throw new Error("betterAnswer field missing");
 
     return {
       ok: true,
-      correct: parsed.correct,
+      result: parsed.result,
       feedback: parsed.feedback,
       betterAnswer: parsed.betterAnswer,
     };
@@ -130,7 +152,7 @@ function parseEvaluationResponse(raw) {
     console.error("parseEvaluationResponse failed:", err.message, "| raw:", raw);
     return {
       ok: true,
-      correct: true,
+      result: "partial",
       feedback: "Good effort! Keep going.",
       betterAnswer: "",
     };

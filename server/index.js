@@ -40,7 +40,7 @@ app.post("/api/evaluate-answer", async (req, res) => {
   }
 
   return res.json({
-    correct: result.correct,
+    result: result.result,
     feedback: result.feedback,
     betterAnswer: result.betterAnswer,
   });
