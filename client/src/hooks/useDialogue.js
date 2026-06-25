@@ -78,7 +78,7 @@ export function useDialogue() {
 
     const eval_ = result.ok
       ? { result: result.result, feedback: result.feedback, betterAnswer: result.betterAnswer }
-      : { result: "partial", feedback: "Good effort! Keep going.", betterAnswer: "" };
+      : { result: "partial", feedback: "Can't give feedback right now due to a technical issue 😔 Keep going — you're doing great!", betterAnswer: "" };
 
     setEvaluation(eval_);
     setScore((prev) => ({
