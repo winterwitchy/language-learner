@@ -102,7 +102,7 @@ Haiku is Anthropic's fastest and cheapest model — roughly 25× cheaper per tok
 - `max_tokens` capped at 1024 for generation and 512 for evaluation
 - Two short API calls per session (one generation + one evaluation per user turn) rather than a long stateful conversation
 - No streaming — we need the complete JSON object before we can do anything with it. Streaming a partial JSON string is unparseable, so it adds complexity with no UX benefit
-- Full dialogue generated in one upfront call rather than turn by turn. This effected dialogue quality poorly. Prompts and task descriptions have been adjusted duly to resolve the problem.
+- Full dialogue generated in one upfront call rather than turn by turn. Prompt engineering was used to ensure NPC lines flow naturally into user turn instructions.
 
 ### Structured output
 The system prompt instructs Claude to return only valid JSON in a specific shape. The response is stripped of markdown fences (Claude sometimes wraps JSON in ```json blocks despite being told not to) then validated field by field before it reaches the frontend. A malformed or empty response never crashes the app — generation failures show the error screen, evaluation failures fall back to a generic encouraging message so the student can always continue.
