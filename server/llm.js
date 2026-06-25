@@ -11,13 +11,13 @@ const LEVEL_GUIDES = {
     turns: 2,
     vocab: "very simple everyday words only",
     hints: "always include a large hint",
-    feedback: "one sentence, warm and encouraging, focus only on what was good. Be generous — any reasonable attempt is correct."
+    feedback: "one warm encouraging sentence. Ignore capitalisation, punctuation, and politeness markers. Only mark incorrect if the meaning is completely wrong."
   },
   A2: {
     turns: 3,
     vocab: "basic vocabulary, short sentences",
     hints: "include a sentence starter hint",
-    feedback: "two sentences — start with one positive, then clearly state one thing to improve. Mark as partial if the meaning is right but grammar is wrong."
+    feedback: "two sentences. Start positive. Ignore capitalisation and punctuation entirely. Only note missing politeness like 'please' if the level guide specifically requires formal register. Mark partial only for genuine grammar errors, not stylistic choices."
   },
   B1: {
     turns: 4,
@@ -51,6 +51,7 @@ Rules:
 - Include exactly ${guide.turns} user turns.
 - Vocabulary: ${guide.vocab}.
 - Hints: ${guide.hints}.
+- User prompts must give a single specific task with no open-ended options. Never say "order a drink and a food item" — instead say "order a green tea and a croissant". Name the specific items, actions, and details the student should use so the pre-scripted NPC response will match.
 - Keep content appropriate for school-age children.`;
 
   const userPrompt = `Scenario: "${scenario}" in ${language} at level ${level}.
