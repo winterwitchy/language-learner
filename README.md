@@ -1,8 +1,7 @@
-# Dialogue Practice — Madlen Intern Case
+# language learner, a language learning app
 
-A language-learning app for K–12 students. Students pick a real-life scenario, a language, and a CEFR level, then practise a short dialogue turn by turn with instant AI feedback.
+**language-learner** is a language learning app for K–12 students. Pick a real-life scenario, a language, and a CEFR level, then practise a short dialogue turn by turn with instant AI feedback.
 
----
 
 ## Quick start
 
