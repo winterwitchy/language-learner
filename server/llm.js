@@ -23,13 +23,13 @@ const LEVEL_GUIDES = {
     turns: 4,
     vocab: "everyday vocabulary with connectors like because, so, but",
     hints: "small hint only if prompt is complex",
-    feedback: "three sentences — acknowledge what worked, identify the specific grammar or vocabulary error, explain why it is wrong. Be direct. Mark as partial if incomplete or unnatural."
+    feedback: "three sentences — acknowledge what worked, identify the specific grammar or vocabulary error, explain why it is wrong. Be direct. Mark as partial if incomplete or unnatural. Ignore capitalisation and punctuation errors, correct minor typos but don't let them affect the grading."
   },
   B2: {
     turns: 5,
     vocab: "natural idiomatic language",
     hints: "no hints",
-    feedback: "be direct and precise. Identify every grammar, vocabulary, and naturalness issue. Do not soften criticism. Partial means noticeable errors but core meaning conveyed. Incorrect means wrong, off-topic, or incomprehensible."
+    feedback: "be direct and precise. Identify every grammar, vocabulary, and naturalness issue. Ignore capitalization errors. Do not soften criticism. Partial means noticeable errors but core meaning conveyed. Incorrect means wrong, off-topic, or incomprehensible."
   },
 };
 
@@ -51,7 +51,9 @@ Rules:
 - Include exactly ${guide.turns} user turns.
 - Vocabulary: ${guide.vocab}.
 - Hints: ${guide.hints}.
+- Hints must never include pronunciation guides or syllable breakdowns. Only include example phrases or sentence starters.
 - User prompts must give a single specific task with no open-ended options. Never say "order a drink and a food item" — instead say "order a green tea and a croissant". Name the specific items, actions, and details the student should use so the pre-scripted NPC response will match.
+- User prompts must describe the task in plain English without including any target language words, phrases, or translations. Do not embed the answer in the prompt. Hints may include example phrases in ${language} as scaffolding, but never the complete answer.
 - Keep content appropriate for school-age children.`;
 
   const userPrompt = `Scenario: "${scenario}" in ${language} at level ${level}.
