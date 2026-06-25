@@ -129,7 +129,7 @@ User prompts name specific items and actions rather than giving open-ended optio
 No Next.js, no Remix — a bare Vite + React frontend and a minimal Express backend. The Vite dev proxy forwards `/api` requests to Express, eliminating CORS configuration in development. Simple to understand, simple to run.
 
 ### State: custom hook
-All session logic lives in `useDialogue.js`. Components are purely presentational — they receive props and fire callbacks. This keeps logic testable and components simple.
+All session logic lives in `useDialogue.js`. Components are purely presentational - they receive props and fire callbacks. This keeps logic testable and components simple.
 
 
 
