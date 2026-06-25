@@ -15,20 +15,6 @@ const SCENARIO_LABELS = {
   doctor: "🏥 At the Doctor",
 };
 
-const NPC_NAMES = {
-  cafe: "Barista",
-  restaurant: "Waiter",
-  hotel: "Receptionist",
-  bookshop: "Bookseller",
-  grocery: "Cashier",
-  directions: "Local",
-  shop: "Shopkeeper",
-  school: "Teacher",
-  park: "Friend",
-  pharmacy: "Pharmacist",
-  airport: "Staff",
-  doctor: "Doctor",
-};
 
 const LEVEL_COLORS = {
   A1: { bg: "#E6F9F2", text: "#2A9468", border: "#3DBD8A" },
@@ -336,6 +322,7 @@ export default function DialogueScreen({
   turnHistory,
   totalUserTurns,
   completedUserTurns,
+  npcName,
   sessionConfig,
   onSubmit,
   onAdvance,
@@ -363,7 +350,6 @@ export default function DialogueScreen({
   const level = sessionConfig?.level;
   const language = sessionConfig?.language;
   const levelColors = LEVEL_COLORS[level] ?? LEVEL_COLORS["A2"];
-  const npcName = NPC_NAMES[scenario] ?? "Speaker";
   const progress = totalUserTurns > 0 ? (score.total / totalUserTurns) * 100 : 0;
 
   return (

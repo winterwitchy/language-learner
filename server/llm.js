@@ -41,12 +41,14 @@ async function generateDialogue({ scenario, level, language }) {
 Return ONLY valid JSON. No markdown, no explanation, no code fences.
 Use this exact shape:
 {
+  "npcName": "string",
   "dialogue": [
     { "speaker": "npc", "line": "string" },
     { "speaker": "user", "prompt": "string", "hint": "string or null" }
   ]
 }
 Rules:
+- "npcName": the name or role of the character the student is talking to. Match it to the scenario and context (e.g. "Classmate", "Teacher", "Receptionist", "Barista", "Friend"). Use a natural name or role, not a job title alone.
 - Alternate between npc and user turns. Always start with npc.
 - Include exactly ${guide.turns} user turns.
 - Vocabulary: ${guide.vocab}.
@@ -70,7 +72,7 @@ Generate a short practice dialogue where the student plays the visitor.`;
     return parseDialogueResponse(raw);
   } catch (err) {
     console.error("generateDialogue error:", err.message);
-    return { ok: false, error: "Could not reach the AI service. Please try again." };
+    return { ok: false, error: "Couldn't load your conversation. Please try again." };
   }
 }
 
@@ -87,7 +89,7 @@ function parseDialogueResponse(raw) {
       if (turn.speaker === "npc" && !turn.line) throw new Error("npc turn missing line");
       if (turn.speaker === "user" && !turn.prompt) throw new Error("user turn missing prompt");
     }
-    return { ok: true, dialogue: parsed.dialogue };
+    return { ok: true, dialogue: parsed.dialogue, npcName: parsed.npcName ?? "Speaker" };
   } catch (err) {
     console.error("parseDialogueResponse failed:", err.message, "| raw:", raw);
     return { ok: false, error: "The AI returned an unexpected response. Please try again." };

@@ -11,9 +11,9 @@ export async function generateDialogue({ scenario, level, language }) {
     const data = await res.json();
 
     if (!res.ok) return { ok: false, error: data.error ?? "Something went wrong." };
-    return { ok: true, dialogue: data.dialogue };
+    return { ok: true, dialogue: data.dialogue, npcName: data.npcName };
   } catch {
-    return { ok: false, error: "Could not connect to the server. Is it running?" };
+    return { ok: false, error: "Something went wrong. Please try again in a moment." };
   }
 }
 
@@ -30,6 +30,6 @@ export async function evaluateAnswer({ scenario, level, language, prompt, userAn
     if (!res.ok) return { ok: false, error: data.error ?? "Something went wrong." };
     return { ok: true, result: data.result, feedback: data.feedback, betterAnswer: data.betterAnswer };
   } catch {
-    return { ok: false, error: "Could not connect to the server. Is it running?" };
+    return { ok: false, error: "Something went wrong. Please try again in a moment." };
   }
 }

@@ -22,7 +22,7 @@ app.post("/api/generate-dialogue", async (req, res) => {
     return res.status(502).json({ error: result.error });
   }
 
-  return res.json({ dialogue: result.dialogue });
+  return res.json({ dialogue: result.dialogue, npcName: result.npcName });
 });
 
 

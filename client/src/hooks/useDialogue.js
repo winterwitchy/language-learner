@@ -14,6 +14,7 @@ export function useDialogue() {
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [turnHistory, setTurnHistory] = useState([]);
   const [answersMap, setAnswersMap] = useState({});
+  const [npcName, setNpcName] = useState("Speaker");
 
   const currentTurn = dialogue[stepIndex] ?? null;
 
@@ -53,6 +54,8 @@ export function useDialogue() {
       return;
     }
 
+    
+    setNpcName(result.npcName ?? "Speaker");
     setDialogue(result.dialogue);
     setStepIndex(0);
     setStatus("active");
@@ -124,6 +127,7 @@ export function useDialogue() {
     setScore({ correct: 0, total: 0 });
     setTurnHistory([]);
     setAnswersMap({});
+    setNpcName("Speaker");
   }, []);
 
 
@@ -152,5 +156,6 @@ export function useDialogue() {
     submitAnswer,
     advance,
     reset,
+    npcName, 
   };
 }

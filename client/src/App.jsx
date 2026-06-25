@@ -15,6 +15,7 @@ export default function App() {
     setUserInput,
     evaluation,
     isEvaluating,
+    npcName,
     awaitingInput,
     score,
     turnHistory,
@@ -63,6 +64,7 @@ export default function App() {
       onSubmit={submitAnswer}
       onAdvance={advance}
       onReset={reset}
+      npcName={npcName}
     />
   );
 }
