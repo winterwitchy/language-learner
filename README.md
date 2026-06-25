@@ -89,7 +89,7 @@ language-learner/
             └── ErrorScreen.jsx
 ```
 
----
+
 
 ## Key design decisions
 
@@ -131,7 +131,7 @@ No Next.js, no Remix — a bare Vite + React frontend and a minimal Express back
 ### State: custom hook
 All session logic lives in `useDialogue.js`. Components are purely presentational — they receive props and fire callbacks. This keeps logic testable and components simple.
 
----
+
 
 ## AI tool usage
 
@@ -156,7 +156,7 @@ This project was built with Claude as an AI assistant throughout development.
 - **Dynamic NPC responses** — attempted and reverted. The NPC line would be generated based on the student's actual answer, making the conversation reactive. The implementation introduced flickering, session completion bugs, incoherent prompt-response pairs, and increased cost. Reverted to pre-scripted dialogues. Noted as a future improvement
 - **TypeScript** — small enough project that careful naming accomplishes the same goal within the time constraint
 
----
+
 
 ## Known limitations
 
