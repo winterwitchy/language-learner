@@ -119,7 +119,7 @@ export default function SetupScreen({ onStart }) {
 
 const styles = {
   wrapper: {
-    maxWidth: 680,
+    maxWidth: 840,
     margin: "0 auto",
     padding: "2rem 1rem",
   },
