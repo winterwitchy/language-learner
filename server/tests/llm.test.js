@@ -65,27 +65,27 @@ describe("parseEvaluationResponse", () => {
 
   test("returns ok:true for valid evaluation JSON", () => {
     const input = JSON.stringify({
-      correct: true,
+      result: "correct",
       feedback: "Great job!",
       betterAnswer: "I'd like a coffee, please.",
     });
 
     const result = parseEvaluationResponse(input);
     expect(result.ok).toBe(true);
-    expect(result.correct).toBe(true);
+    expect(result.result).toBe("correct");
     expect(result.feedback).toBe("Great job!");
   });
 
   test("returns ok:true with correct:false for wrong answer", () => {
     const input = JSON.stringify({
-      correct: false,
+      result: "incorrect",
       feedback: "Good try! Remember to say please.",
       betterAnswer: "Can I have a coffee, please?",
     });
 
     const result = parseEvaluationResponse(input);
     expect(result.ok).toBe(true);
-    expect(result.correct).toBe(false);
+    expect(result.result).toBe("incorrect");
   });
 
   test("returns graceful fallback for empty string", () => {
