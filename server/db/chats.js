@@ -18,6 +18,15 @@ function getChat(chatId) {
 }
 
 function listChats({ userId = "000000", status = null, limit = 20, offset = 0 }) {
+  // "incomplete" groups active + abandoned (everything that isn't completed).
+  if (status === "incomplete") {
+    return db
+      .prepare(
+        `SELECT * FROM chats WHERE user_id = ? AND status != 'completed'
+         ORDER BY updated_at DESC LIMIT ? OFFSET ?`
+      )
+      .all(userId, limit, offset);
+  }
   if (status) {
     return db
       .prepare(

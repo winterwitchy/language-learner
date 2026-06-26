@@ -151,7 +151,7 @@ function scoreFromTurns(turns) {
 
 // Only the most recent N completed sessions feed the cumulative review, so old,
 // no-longer-relevant mistakes age out instead of lingering forever.
-const PROFILE_SESSION_WINDOW = 20;
+const PROFILE_SESSION_WINDOW = 10;
 
 // Recompute a user's review profile for one language from the windowed mistake
 // notes. Used after a session completes and to self-heal an empty profile.

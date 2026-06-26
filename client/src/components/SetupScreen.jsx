@@ -16,6 +16,8 @@ const MAX_TURNS = 20;
 
 // How many previous chats to show before the "Show all" toggle.
 const COLLAPSED_COUNT = 4;
+// Max chats fetched per group (incomplete / completed) — caps each list at 20.
+const CHAT_LIST_LIMIT = 20;
 
 // Row accent in the brand palette (no red/yellow/green). Shade = intensity:
 //   light orange = quit / in-progress (just unfinished)
@@ -59,15 +61,21 @@ export default function SetupScreen({ onStart, onResume, userId, onSwitchUser })
   const [level, setLevel] = useState("A2");
   const [scenario, setScenario] = useState(null);
   const [turns, setTurns] = useState(LEVEL_TURNS["A2"]);
-  const [previousChats, setPreviousChats] = useState([]);
+  const [resumableChats, setResumableChats] = useState([]);
+  const [completedChats, setCompletedChats] = useState([]);
   const [profile, setProfile] = useState(null);
   const [showAllResume, setShowAllResume] = useState(false);
   const [showAllDone, setShowAllDone] = useState(false);
   const [confirmingId, setConfirmingId] = useState(null);
 
+  // Up to 20 most-recent of each group, fetched independently so one never
+  // crowds out the other.
   useEffect(() => {
-    listChats().then((res) => {
-      if (res.ok) setPreviousChats(res.chats ?? []);
+    listChats({ status: "incomplete", limit: CHAT_LIST_LIMIT }).then((res) => {
+      if (res.ok) setResumableChats(res.chats ?? []);
+    });
+    listChats({ status: "completed", limit: CHAT_LIST_LIMIT }).then((res) => {
+      if (res.ok) setCompletedChats(res.chats ?? []);
     });
   }, []);
 
@@ -81,16 +89,14 @@ export default function SetupScreen({ onStart, onResume, userId, onSwitchUser })
   const canStart = scenario !== null;
   const scenarioLabel = (id) => SCENARIOS.find((s) => s.id === id)?.label ?? id;
 
-  // Incomplete (resumable) vs completed, shown in separate cards so a quit chat
-  // is never confused with a completed-but-weak one.
-  const resumableChats = previousChats.filter((c) => c.status !== "completed");
-  const completedChats = previousChats.filter((c) => c.status === "completed");
+  // Shown in separate cards (incomplete vs completed) so a quit chat is never
+  // confused with a completed-but-weak one.
   const visibleResume = showAllResume ? resumableChats : resumableChats.slice(0, COLLAPSED_COUNT);
   const visibleDone = showAllDone ? completedChats : completedChats.slice(0, COLLAPSED_COUNT);
 
   const handleDelete = async (chatId) => {
     const res = await deleteChat(chatId);
-    if (res.ok) setPreviousChats((prev) => prev.filter((c) => c.chatId !== chatId));
+    if (res.ok) setResumableChats((prev) => prev.filter((c) => c.chatId !== chatId));
     setConfirmingId(null);
   };
 
@@ -175,9 +181,7 @@ export default function SetupScreen({ onStart, onResume, userId, onSwitchUser })
               {profile.recurringPatterns.slice(0, 4).map((p, i) => (
                 <div key={i} style={styles.reviewItem}>
                   <span style={styles.reviewDot} />
-                  <span style={styles.reviewText}>
-                    {p.pattern}{p.count ? ` (${p.count}×)` : ""}
-                  </span>
+                  <span style={styles.reviewText}>{p.pattern}</span>
                 </div>
               ))}
             </div>

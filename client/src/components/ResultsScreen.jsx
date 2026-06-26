@@ -102,9 +102,7 @@ export default function ResultsScreen({ score, turnHistory, sessionConfig, chatI
                 {report.recurringPatterns.map((p, i) => (
                   <div key={i} style={styles.patternItem}>
                     <span style={styles.patternDot} />
-                    <span style={styles.patternText}>
-                      {p.pattern}{p.count ? ` (${p.count}×)` : ""}
-                    </span>
+                    <span style={styles.patternText}>{p.pattern}</span>
                   </div>
                 ))}
               </div>

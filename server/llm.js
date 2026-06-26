@@ -232,13 +232,13 @@ Use this exact shape:
 {
   "summary": "string",
   "recurringPatterns": [
-    { "pattern": "string", "count": number, "examples": ["string"] }
+    { "pattern": "string", "examples": ["string"] }
   ]
 }
 Rules:
 - "summary": 1-3 encouraging, specific sentences on how the student did overall.
 - Group mistakes that share an underlying cause into ONE pattern.
-- Only include a pattern in "recurringPatterns" if it occurred more than once this session.
+- List only the important issues worth working on; omit minor or one-off slips.
 - Keep it specific (name the actual habit) and appropriate for school-age children.`;
 
   const userPrompt = `Here are the student's mistake notes from this session:\n${mistakeNotes
@@ -274,12 +274,12 @@ Use this exact shape:
 {
   "summary": "string",
   "recurringPatterns": [
-    { "pattern": "string", "count": number, "examples": ["string"] }
+    { "pattern": "string", "examples": ["string"] }
   ]
 }
 Rules:
-- Group mistakes that share an underlying cause into ONE pattern, and set "count" to how many times it appears.
-- List the most significant recurring patterns first; ignore one-off slips.
+- Group mistakes that share an underlying cause into ONE pattern.
+- List only the important, recurring patterns — the things most worth working on, most significant first. Omit one-off or minor slips.
 - "summary": a concise, encouraging overview of what the student should work on next, across their recent sessions.
 - Keep it appropriate for school-age children.`;
 

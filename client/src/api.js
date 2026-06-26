@@ -43,9 +43,12 @@ export function getChat(chatId) {
   return request(`/chats/${chatId}`);
 }
 
-// The current user's previous chats, newest first.
-export function listChats({ limit = 20 } = {}) {
-  return request(`/chats?limit=${limit}`);
+// The current user's previous chats, newest first. Optional status filter:
+// "completed" or "incomplete" (active + abandoned).
+export function listChats({ status, limit = 20 } = {}) {
+  const q = new URLSearchParams({ limit: String(limit) });
+  if (status) q.set("status", status);
+  return request(`/chats?${q.toString()}`);
 }
 
 // Submit + evaluate one answer.
