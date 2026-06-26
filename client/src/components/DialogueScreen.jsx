@@ -330,6 +330,7 @@ export default function DialogueScreen({
   onSubmit,
   onAdvance,
   onReset,
+  onBackToChats,
 }) {
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
@@ -360,7 +361,7 @@ export default function DialogueScreen({
     <div style={styles.wrapper}>
 
       <div style={styles.topBar}>
-        <button onClick={onReset} style={styles.backBtn}>← Back</button>
+        <button onClick={onBackToChats ?? onReset} style={styles.backBtn}>← Chats</button>
         <div style={styles.topBarCenter}>
           <span style={styles.scenarioTag}>{SCENARIO_LABELS[scenario] ?? scenario}</span>
           <span style={{

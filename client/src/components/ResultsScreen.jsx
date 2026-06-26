@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getReport } from "../api";
 
 const SCENARIO_LABELS = {
   cafe: "☕ At a Café",
@@ -25,9 +26,24 @@ function getResultTier(correct, total) {
 }
 
 
-export default function ResultsScreen({ score, turnHistory, sessionConfig, onReplay, onReset }) {
+export default function ResultsScreen({ score, turnHistory, sessionConfig, chatId, onReplay, onReset }) {
   const { correct, total } = score;
   const tier = getResultTier(correct, total);
+
+  // Session report (recurring-mistake patterns). Fetching it triggers the
+  // backend to generate it and refresh the cumulative learner profile.
+  const [report, setReport] = useState(null);
+  const [reportLoading, setReportLoading] = useState(false);
+
+  useEffect(() => {
+    if (!chatId) return;
+    setReportLoading(true);
+    getReport(chatId)
+      .then((res) => {
+        if (res.ok) setReport(res);
+      })
+      .finally(() => setReportLoading(false));
+  }, [chatId]);
   const scenario = sessionConfig?.scenario;
   const level = sessionConfig?.level;
   const language = sessionConfig?.language;
@@ -72,6 +88,30 @@ export default function ResultsScreen({ score, turnHistory, sessionConfig, onRep
             <span style={styles.metaTag}>{level} · {language}</span>
           </div>
         </div>
+
+        {reportLoading && !report && (
+          <div style={styles.reportLoading}>📋 Looking over your answers…</div>
+        )}
+
+        {report && (report.summary || report.recurringPatterns?.length > 0) && (
+          <div style={styles.reportCard}>
+            <h2 style={styles.reportTitle}>📋 Session insights</h2>
+            {report.summary && <p style={styles.reportSummary}>{report.summary}</p>}
+            {report.recurringPatterns?.length > 0 && (
+              <div style={styles.patternList}>
+                {report.recurringPatterns.map((p, i) => (
+                  <div key={i} style={styles.patternItem}>
+                    <span style={styles.patternDot} />
+                    <span style={styles.patternText}>
+                      {p.pattern}{p.count ? ` (${p.count}×)` : ""}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {turnHistory.length > 0 && (
           <div style={styles.breakdown}>
             <h2 style={styles.breakdownTitle}>Review your answers</h2>
@@ -129,6 +169,52 @@ const styles = {
     maxWidth: 680,
     margin: "0 auto",
     padding: "2rem 1rem",
+  },
+  reportLoading: {
+    margin: "1.2rem 1.5rem 0",
+    fontSize: "0.85rem",
+    color: "#4A5568",
+    fontStyle: "italic",
+  },
+  reportCard: {
+    margin: "1.2rem 1.5rem 0",
+    padding: "1rem 1.2rem",
+    background: "#FBF0E6",
+    borderRadius: 14,
+    border: "1.5px solid #E7E1D7",
+  },
+  reportTitle: {
+    fontSize: "1rem",
+    fontWeight: 800,
+    color: "#2B2630",
+    marginBottom: "0.5rem",
+  },
+  reportSummary: {
+    fontSize: "0.9rem",
+    color: "#2B2630",
+    lineHeight: 1.5,
+    marginBottom: "0.6rem",
+  },
+  patternList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.35rem",
+  },
+  patternItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  },
+  patternDot: {
+    width: 6,
+    height: 6,
+    borderRadius: "50%",
+    background: "#C76A22",
+    flexShrink: 0,
+  },
+  patternText: {
+    fontSize: "0.85rem",
+    color: "#2B2630",
   },
   card: {
     background: "#fff",

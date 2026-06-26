@@ -23,17 +23,20 @@ export default function App() {
     sessionConfig,
     errorMessage,
     totalUserTurns,
+    chatId,
     start,
+    resume,
     submitAnswer,
     advance,
     reset,
+    leaveToChats,
   } = useDialogue();
 
   const handleReplay = useCallback(() => {
     if (sessionConfig) start(sessionConfig);
   }, [sessionConfig, start]);
 
-  if (status === "idle") return <SetupScreen onStart={start} />;
+  if (status === "idle") return <SetupScreen onStart={start} onResume={resume} />;
   if (status === "loading") return <LoadingScreen sessionConfig={sessionConfig} />;
   if (status === "error") return <ErrorScreen message={errorMessage} onRetry={handleReplay} onReset={reset} />;
   if (status === "complete") return (
@@ -41,6 +44,7 @@ export default function App() {
       score={score}
       turnHistory={turnHistory}
       sessionConfig={sessionConfig}
+      chatId={chatId}
       onReplay={handleReplay}
       onReset={reset}
     />
@@ -64,6 +68,7 @@ export default function App() {
       onSubmit={submitAnswer}
       onAdvance={advance}
       onReset={reset}
+      onBackToChats={leaveToChats}
       npcName={npcName}
     />
   );
