@@ -1,8 +1,7 @@
-# Dialogue Practice — Madlen Intern Case
+# language learner, a language learning app
 
-A language-learning app for K–12 students. Students pick a real-life scenario, a language, and a CEFR level, then practise a short dialogue turn by turn with instant AI feedback.
+**language-learner** is a language learning app for K–12 students. Pick a real-life scenario, a language, and a CEFR level, then practise a short dialogue turn by turn with instant AI feedback.
 
----
 
 ## Quick start
 
@@ -90,7 +89,7 @@ language-learner/
             └── ErrorScreen.jsx
 ```
 
----
+
 
 ## Key design decisions
 
@@ -103,7 +102,7 @@ Haiku is Anthropic's fastest and cheapest model — roughly 25× cheaper per tok
 - `max_tokens` capped at 1024 for generation and 512 for evaluation
 - Two short API calls per session (one generation + one evaluation per user turn) rather than a long stateful conversation
 - No streaming — we need the complete JSON object before we can do anything with it. Streaming a partial JSON string is unparseable, so it adds complexity with no UX benefit
-- Full dialogue generated in one upfront call rather than turn by turn. This effected dialogue quality poorly. Prompts and task descriptions have been adjusted duly to resolve the problem.
+- Full dialogue generated in one upfront call rather than turn by turn. Prompt engineering was used to ensure NPC lines flow naturally into user turn instructions.
 
 ### Structured output
 The system prompt instructs Claude to return only valid JSON in a specific shape. The response is stripped of markdown fences (Claude sometimes wraps JSON in ```json blocks despite being told not to) then validated field by field before it reaches the frontend. A malformed or empty response never crashes the app — generation failures show the error screen, evaluation failures fall back to a generic encouraging message so the student can always continue.
@@ -130,9 +129,9 @@ User prompts name specific items and actions rather than giving open-ended optio
 No Next.js, no Remix — a bare Vite + React frontend and a minimal Express backend. The Vite dev proxy forwards `/api` requests to Express, eliminating CORS configuration in development. Simple to understand, simple to run.
 
 ### State: custom hook
-All session logic lives in `useDialogue.js`. Components are purely presentational — they receive props and fire callbacks. This keeps logic testable and components simple.
+All session logic lives in `useDialogue.js`. Components are purely presentational - they receive props and fire callbacks. This keeps logic testable and components simple.
 
----
+
 
 ## AI tool usage
 
@@ -157,7 +156,7 @@ This project was built with Claude as an AI assistant throughout development.
 - **Dynamic NPC responses** — attempted and reverted. The NPC line would be generated based on the student's actual answer, making the conversation reactive. The implementation introduced flickering, session completion bugs, incoherent prompt-response pairs, and increased cost. Reverted to pre-scripted dialogues. Noted as a future improvement
 - **TypeScript** — small enough project that careful naming accomplishes the same goal within the time constraint
 
----
+
 
 ## Known limitations
 
