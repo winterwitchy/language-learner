@@ -1,5 +1,9 @@
 import React, { useEffect, useRef } from "react";
 
+// Max length of a student answer. Kept in sync with the server-side check in
+// index.js so the API call is never wasted on an over-long answer.
+const MAX_ANSWER_LENGTH = 280;
+
 const SCENARIO_LABELS = {
   cafe: "☕ At a Café",
   restaurant: "🍽️ At a Restaurant",
@@ -282,6 +286,13 @@ const styles = {
     outline: "none",
     transition: "border-color 0.15s",
   },
+  charCount: {
+    fontSize: "0.7rem",
+    color: "#4A5568",
+    alignSelf: "flex-end",
+    paddingBottom: "0.55rem",
+    whiteSpace: "nowrap",
+  },
   submitBtn: {
     padding: "0.6rem 1.2rem",
     background: "linear-gradient(135deg, #E8823C, #C76A22)",
@@ -456,12 +467,16 @@ export default function DialogueScreen({
           <textarea
             ref={inputRef}
             value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
+            onChange={(e) => setUserInput(e.target.value.slice(0, MAX_ANSWER_LENGTH))}
             onKeyDown={handleKeyDown}
             placeholder="Type your answer here…"
             rows={2}
+            maxLength={MAX_ANSWER_LENGTH}
             style={styles.textarea}
           />
+          <span style={styles.charCount}>
+            {userInput.length}/{MAX_ANSWER_LENGTH}
+          </span>
           <button
             onClick={onSubmit}
             disabled={!userInput.trim()}
