@@ -93,13 +93,18 @@ language-learner/
 
 ## Key design decisions
 
-### LLM: Claude Haiku (claude-haiku-4-5)
-Haiku is Anthropic's fastest and cheapest model — roughly 25× cheaper per token than Opus. For generating structured JSON dialogues and short evaluations, it performs identically to larger models. The prompts are precise enough that model size doesn't matter.
+### LLM: a task-based model split
+The two API calls have different demands, so they use different models:
 
-**Exception:** Turkish and Russian use `claude-sonnet-4-6`. During testing, Haiku made consistent morphological errors in Turkish (wrong case suffixes, consonant mutation errors) and Russian (wrong case declensions). Sonnet handles these reliably. This is a targeted upgrade — common languages stay on Haiku.
+- **Dialogue generation → Claude Haiku (`claude-haiku-4-5`).** This is templated, low-judgment work and the bulk of the tokens, so the fast, cheap model fits.
+- **Answer evaluation → Claude Sonnet (`claude-sonnet-4-6`).** Grading is the judgment-critical call (correct/partial/incorrect plus feedback). Haiku tended to over-penalise valid answers — faulting phrasing or surface form, or inventing grammar rules to justify a lower mark — so the stronger model goes exactly where quality matters. Evaluation calls are small (one per turn, ~512 tokens), so the cost impact is modest.
+
+**Turkish and Russian use Sonnet for both calls.** Haiku made consistent morphological errors there (wrong case suffixes, consonant mutations, case declensions), so generation is upgraded too.
+
+The principle: cheap model for the easy, high-volume call; strong model for the hard, judgment call. This keeps most of the cost savings while fixing grading quality at its source.
 
 ### Cost optimisation
-- `max_tokens` capped at 1024 for generation and 512 for evaluation
+- `max_tokens` for generation scales with conversation length (~512–4096); evaluation is capped at 512
 - Two short API calls per session (one generation + one evaluation per user turn) rather than a long stateful conversation
 - No streaming — we need the complete JSON object before we can do anything with it. Streaming a partial JSON string is unparseable, so it adds complexity with no UX benefit
 - Full dialogue generated in one upfront call rather than turn by turn. Prompt engineering was used to ensure NPC lines flow naturally into user turn instructions.

@@ -3,3 +3,6 @@ node_modules/
 coverage/
 .DS_Store
 dist/
+
+# SQLite database files (created at runtime)
+server/data/
