@@ -145,15 +145,20 @@ function scoreFromTurns(turns) {
 // no-longer-relevant mistakes age out instead of lingering forever.
 const PROFILE_SESSION_WINDOW = 20;
 
-// Recompute the user's review profile from the windowed mistake notes. Runs once
-// per session, in the background right after completion.
-async function refreshLearnerProfile(chat) {
-  const notes = profilesRepo.recentCompletedNotes(chat.user_id, chat.language, PROFILE_SESSION_WINDOW);
-  const sessionsConsidered = profilesRepo.completedCount(chat.user_id, chat.language, PROFILE_SESSION_WINDOW);
+// Recompute a user's review profile for one language from the windowed mistake
+// notes. Used after a session completes and to self-heal an empty profile.
+async function refreshLearnerProfile(userId, language) {
+  const notes = profilesRepo.recentCompletedNotes(userId, language, PROFILE_SESSION_WINDOW);
+  const sessionsConsidered = profilesRepo.completedCount(userId, language, PROFILE_SESSION_WINDOW);
   // Build fresh from the window (no merge with the old profile — it was itself
   // derived from a now-shifted window).
   const built = await updateLearnerProfile({ sessionNotes: notes });
-  profilesRepo.upsertProfile(chat.user_id, chat.language, {
+
+  // Don't clobber an existing review if the rebuild failed (a transient LLM
+  // error returns empty) — only persist a successful result.
+  if (!built.ok) return;
+
+  profilesRepo.upsertProfile(userId, language, {
     summary: built.summary,
     recurringPatterns: built.recurringPatterns,
     sessionsCount: sessionsConsidered,
@@ -345,7 +350,7 @@ app.post("/api/chats/:chatId/turns/:turnId/answer", llmLimiter, async (req, res)
   // After responding (so the last answer stays snappy), refresh the cumulative
   // profile in the background so the main-screen review reflects this session.
   if (sessionComplete) {
-    refreshLearnerProfile(chat).catch((err) => console.error("profile refresh error:", err.message));
+    refreshLearnerProfile(chat.user_id, chat.language).catch((err) => console.error("profile refresh error:", err.message));
   }
 });
 
@@ -390,12 +395,22 @@ app.get("/api/chats/:chatId/report", async (req, res) => {
 
 
 // Cumulative learner profile for a user in one language.
-app.get("/api/users/:userId/profile", (req, res) => {
+app.get("/api/users/:userId/profile", async (req, res) => {
+  const userId = req.params.userId;
   const language = req.query.language;
-  const empty = { userId: req.params.userId, language: language ?? null, summary: "", recurringPatterns: [], sessionsCount: 0 };
+  const empty = { userId, language: language ?? null, summary: "", recurringPatterns: [], sessionsCount: 0 };
   if (!language) return res.json(empty);
 
-  const row = profilesRepo.getProfile(req.params.userId, language);
+  let row = profilesRepo.getProfile(userId, language);
+
+  // Self-heal: if there's no review (missing, or previously wiped to empty) but
+  // the user has mistake notes in completed sessions, rebuild it now from those.
+  const rowEmpty = !row || (!row.summary && JSON.parse(row.recurring_patterns || "[]").length === 0);
+  if (rowEmpty && profilesRepo.recentCompletedNotes(userId, language, PROFILE_SESSION_WINDOW).length > 0) {
+    await refreshLearnerProfile(userId, language);
+    row = profilesRepo.getProfile(userId, language);
+  }
+
   if (!row) return res.json(empty);
 
   return res.json({
