@@ -3,10 +3,14 @@ const express = require("express");
 const cors = require("cors");
 const { generateDialogue, evaluateAnswer } = require("./llm");
 
-// CEFR levels supported by LEVEL_GUIDES in llm.js. An invalid level would make
-// LEVEL_GUIDES[level] undefined and throw before llm.js's try/catch, so we
-// reject it here at the route boundary.
+// Allowed setup values, mirroring the options the frontend (SetupScreen.jsx)
+// offers. We validate against these at the route boundary so unexpected input
+// is rejected with a clear 400 instead of producing junk output or, in the
+// case of level, crashing: LEVEL_GUIDES[level] would be undefined and throw
+// before llm.js's try/catch.
 const VALID_LEVELS = ["A1", "A2", "B1", "B2"];
+const VALID_LANGUAGES = ["English", "French", "Spanish", "German", "Italian", "Turkish", "Russian"];
+const VALID_SCENARIOS = ["cafe", "restaurant", "hotel", "bookshop", "grocery", "directions", "shop", "school", "park", "pharmacy", "airport", "doctor"];
 
 // accept requests from the frontend port, parse incoming JSON requests
 const app = express();
@@ -23,6 +27,14 @@ app.post("/api/generate-dialogue", async (req, res) => {
 
   if (!VALID_LEVELS.includes(level)) {
     return res.status(400).json({ error: `level must be one of: ${VALID_LEVELS.join(", ")}.` });
+  }
+
+  if (!VALID_LANGUAGES.includes(language)) {
+    return res.status(400).json({ error: `language must be one of: ${VALID_LANGUAGES.join(", ")}.` });
+  }
+
+  if (!VALID_SCENARIOS.includes(scenario)) {
+    return res.status(400).json({ error: `scenario must be one of: ${VALID_SCENARIOS.join(", ")}.` });
   }
 
   const result = await generateDialogue({ scenario, level, language });
@@ -44,6 +56,14 @@ app.post("/api/evaluate-answer", async (req, res) => {
 
   if (!VALID_LEVELS.includes(level)) {
     return res.status(400).json({ error: `level must be one of: ${VALID_LEVELS.join(", ")}.` });
+  }
+
+  if (!VALID_LANGUAGES.includes(language)) {
+    return res.status(400).json({ error: `language must be one of: ${VALID_LANGUAGES.join(", ")}.` });
+  }
+
+  if (!VALID_SCENARIOS.includes(scenario)) {
+    return res.status(400).json({ error: `scenario must be one of: ${VALID_SCENARIOS.join(", ")}.` });
   }
 
   const result = await evaluateAnswer({ scenario, level, language, prompt, userAnswer });

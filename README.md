@@ -107,6 +107,9 @@ Haiku is Anthropic's fastest and cheapest model — roughly 25× cheaper per tok
 ### Structured output
 The system prompt instructs Claude to return only valid JSON in a specific shape. The response is stripped of markdown fences (Claude sometimes wraps JSON in ```json blocks despite being told not to) then validated field by field before it reaches the frontend. A malformed or empty response never crashes the app — generation failures show the error screen, evaluation failures fall back to a generic encouraging message so the student can always continue.
 
+### Input validation
+Both routes in `index.js` validate `level`, `language`, and `scenario` against allowlists before any Claude call. `level` is the critical one: it's used as an object key (`LEVEL_GUIDES[level]`) and immediately dereferenced (`guide.turns`), so an invalid value would throw a `TypeError` *before* `llm.js`'s try/catch and crash the request. `language` and `scenario` are only interpolated into the prompt string, so a bad value wouldn't crash — but they're validated anyway so the API rejects off-list input with a clear 400 instead of paying for a Claude call that produces junk. The allowlists mirror the options offered in `SetupScreen.jsx`.
+
 ### Level differentiation
 Level controls four concrete axes in every prompt:
 
@@ -163,3 +166,4 @@ This project was built with Claude as an AI assistant throughout development.
 - **NPC lines are pre-scripted** — the entire dialogue is generated upfront, so NPC responses don't react to what the student actually said. Designed so this can be added later: it's a new endpoint and a change to `advance()` in `useDialogue.js`
 - **No session persistence** — scores are not saved between sessions. A future improvement would add localStorage or a simple backend store
 - **No rate limiting** — the API key is protected server-side but the endpoints have no rate limiting. A production deployment would add `express-rate-limit` and input sanitisation
+- **Validation allowlists are duplicated** — the valid languages and scenarios are listed in both `SetupScreen.jsx` (frontend) and `index.js` (backend). Adding a new option means updating both, or valid requests get rejected. This is a deliberate trade-off: the backend can't trust the client, so it validates independently. A shared constants module would remove the duplication in a larger project
