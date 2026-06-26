@@ -5,9 +5,12 @@
 }
 
 :root {
-  --sky: #4A90D9;
-  --sky-dark: #2C6FAC;
-  --sky-light: #EBF4FF;
+  --purple: #6B4FD0;
+  --purple-dark: #5135A8;
+  --purple-light: #EFEAFB;
+  --accent: #E8823C;
+  --accent-dark: #C76A22;
+  --accent-light: #FBF0E6;
   --mint: #3DBD8A;
   --mint-dark: #2A9468;
   --mint-light: #E6F9F2;
@@ -15,11 +18,11 @@
   --coral-light: #FEF0EE;
   --sun: #F5A623;
   --sun-light: #FEF6E7;
-  --ink: #1A2340;
+  --ink: #2B2630;
   --ink-soft: #4A5568;
-  --border: #D9E4F0;
+  --border: #E7E1D7;
   --white: #FFFFFF;
-  --bg: #F0F6FF;
+  --bg: #F6F2EC;
   --radius: 16px;
   --radius-sm: 10px;
 }
@@ -70,5 +73,5 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: var(--sky);
+  border-color: var(--accent);
 }

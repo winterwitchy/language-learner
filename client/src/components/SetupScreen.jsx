@@ -50,9 +50,9 @@ export default function SetupScreen({ onStart }) {
                 onClick={() => setLanguage(lang)}
                 style={{
                   ...styles.pill,
-                  border: language === lang ? "2px solid #4A90D9" : "2px solid transparent",
-                  background: language === lang ? "#EBF4FF" : "#F0F6FF",
-                  color: language === lang ? "#2C6FAC" : "#1A2340",
+                  border: language === lang ? "2px solid #E8823C" : "2px solid transparent",
+                  background: language === lang ? "#FBF0E6" : "#F6F2EC",
+                  color: language === lang ? "#C76A22" : "#2B2630",
                 }}
               >
                 {lang}
@@ -70,9 +70,9 @@ export default function SetupScreen({ onStart }) {
                 onClick={() => setLevel(lvl)}
                 style={{
                   ...styles.pill,
-                  border: level === lvl ? "2px solid #4A90D9" : "2px solid transparent",
-                  background: level === lvl ? "#EBF4FF" : "#F0F6FF",
-                  color: level === lvl ? "#2C6FAC" : "#1A2340",
+                  border: level === lvl ? "2px solid #E8823C" : "2px solid transparent",
+                  background: level === lvl ? "#FBF0E6" : "#F6F2EC",
+                  color: level === lvl ? "#C76A22" : "#2B2630",
                 }}
               >
                 <span style={{ fontWeight: 800 }}>{lvl}</span>
@@ -93,8 +93,8 @@ export default function SetupScreen({ onStart }) {
                 onClick={() => setScenario(s.id)}
                 style={{
                   ...styles.scenarioCard,
-                  border: scenario === s.id ? "2px solid #4A90D9" : "2px solid transparent",
-                  background: scenario === s.id ? "#EBF4FF" : "#F0F6FF",
+                  border: scenario === s.id ? "2px solid #E8823C" : "2px solid transparent",
+                  background: scenario === s.id ? "#FBF0E6" : "#F6F2EC",
                 }}
               >
                 <div style={styles.scenarioLabel}>{s.label}</div>
@@ -133,7 +133,7 @@ const styles = {
   },
   title: {
     fontSize: "2.2rem",
-    color: "#1A2340",
+    color: "#2B2630",
     marginBottom: "0.4rem",
   },
   subtitle: {
@@ -144,7 +144,7 @@ const styles = {
     background: "#FFFFFF",
     borderRadius: 20,
     padding: "2rem",
-    boxShadow: "0 4px 20px rgba(74, 144, 217, 0.12)",
+    boxShadow: "0 4px 20px rgba(200, 120, 60, 0.13)",
   },
   section: {
     marginBottom: "1.8rem",
@@ -153,7 +153,7 @@ const styles = {
     display: "block",
     fontWeight: 700,
     fontSize: "1rem",
-    color: "#1A2340",
+    color: "#2B2630",
     marginBottom: "0.8rem",
   },
   row: {
@@ -163,17 +163,17 @@ const styles = {
   },
   pill: {
     padding: "0.5rem 1rem",
-    background: "#F0F6FF",
-    color: "#1A2340",
+    background: "#F6F2EC",
+    color: "#2B2630",
     borderRadius: 30,
     fontSize: "0.9rem",
     border: "2px solid transparent",
     lineHeight: 1.3,
   },
   pillActive: {
-    background: "#EBF4FF",
-    borderColor: "#4A90D9",
-    color: "#2C6FAC",
+    background: "#FBF0E6",
+    borderColor: "#E8823C",
+    color: "#C76A22",
   },
   scenarioGrid: {
     display: "grid",
@@ -182,15 +182,15 @@ const styles = {
   },
   scenarioCard: {
     padding: "1rem",
-    background: "#F0F6FF",
+    background: "#F6F2EC",
     borderRadius: 14,
     textAlign: "left",
     border: "2px solid transparent",
     lineHeight: 1.4,
   },
   scenarioActive: {
-    background: "#EBF4FF",
-    borderColor: "#4A90D9",
+    background: "#FBF0E6",
+    borderColor: "#E8823C",
   },
   scenarioLabel: {
     fontWeight: 700,
@@ -204,7 +204,7 @@ const styles = {
   startBtn: {
     width: "100%",
     padding: "1rem",
-    background: "linear-gradient(135deg, #4A90D9, #2C6FAC)",
+    background: "linear-gradient(135deg, #E8823C, #C76A22)",
     color: "#fff",
     fontSize: "1.1rem",
     borderRadius: 12,

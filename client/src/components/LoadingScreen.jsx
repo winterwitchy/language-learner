@@ -34,7 +34,7 @@ const styles = {
     borderRadius: 20,
     padding: "3rem 2rem",
     textAlign: "center",
-    boxShadow: "0 4px 20px rgba(74,144,217,0.12)",
+    boxShadow: "0 4px 20px rgba(200,120,60,0.13)",
     maxWidth: 360,
     width: "100%",
   },
@@ -42,15 +42,15 @@ const styles = {
     width: 56,
     height: 56,
     borderRadius: "50%",
-    border: "5px solid #EBF4FF",
-    borderTop: "5px solid #4A90D9",
+    border: "5px solid #FBF0E6",
+    borderTop: "5px solid #E8823C",
     margin: "0 auto 1.5rem",
     animation: "spin 0.9s linear infinite",
   },
   heading: {
     fontFamily: "'Nunito', sans-serif",
     fontSize: "1.3rem",
-    color: "#1A2340",
+    color: "#2B2630",
     marginBottom: "0.5rem",
   },
   sub: {
@@ -60,7 +60,7 @@ const styles = {
   },
   msg: {
     fontSize: "0.9rem",
-    color: "#4A90D9",
+    color: "#E8823C",
     fontStyle: "italic",
   },
 };

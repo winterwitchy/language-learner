@@ -31,7 +31,7 @@ const styles = {
     borderRadius: 20,
     padding: "2.5rem 2rem",
     textAlign: "center",
-    boxShadow: "0 4px 20px rgba(74,144,217,0.12)",
+    boxShadow: "0 4px 20px rgba(200,120,60,0.13)",
     maxWidth: 380,
     width: "100%",
   },
@@ -42,7 +42,7 @@ const styles = {
   heading: {
     fontFamily: "'Nunito', sans-serif",
     fontSize: "1.4rem",
-    color: "#1A2340",
+    color: "#2B2630",
     marginBottom: "0.6rem",
   },
   message: {
@@ -58,17 +58,17 @@ const styles = {
   },
   retryBtn: {
     padding: "0.85rem",
-    background: "linear-gradient(135deg, #4A90D9, #2C6FAC)",
+    background: "linear-gradient(135deg, #E8823C, #C76A22)",
     color: "#fff",
     fontSize: "1rem",
     borderRadius: 12,
   },
   resetBtn: {
     padding: "0.85rem",
-    background: "#F0F6FF",
-    color: "#2C6FAC",
+    background: "#F6F2EC",
+    color: "#C76A22",
     fontSize: "1rem",
     borderRadius: 12,
-    border: "2px solid #4A90D9",
+    border: "2px solid #E8823C",
   },
 };

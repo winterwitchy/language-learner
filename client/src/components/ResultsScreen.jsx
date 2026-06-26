@@ -16,11 +16,11 @@ const SCENARIO_LABELS = {
 };
 
 function getResultTier(correct, total) {
-  if (total === 0) return { emoji: "🌟", label: "Done!", color: "#4A90D9" };
+  if (total === 0) return { emoji: "🌟", label: "Done!", color: "#E8823C" };
   const pct = correct / total;
   if (pct === 1) return { emoji: "🏆", label: "Perfect!", color: "#F5A623" };
   if (pct >= 0.75) return { emoji: "🎉", label: "Great job!", color: "#3DBD8A" };
-  if (pct >= 0.5) return { emoji: "💪", label: "Good effort!", color: "#4A90D9" };
+  if (pct >= 0.5) return { emoji: "💪", label: "Good effort!", color: "#E8823C" };
   return { emoji: "📚", label: "Keep practising!", color: "#F26B5B" };
 }
 
@@ -47,7 +47,7 @@ export default function ResultsScreen({ score, turnHistory, sessionConfig, onRep
 
           <div style={styles.scoreRingWrap}>
             <svg width="110" height="110" viewBox="0 0 110 110">
-              <circle cx="55" cy="55" r="48" fill="none" stroke="#D9E4F0" strokeWidth="10" />
+              <circle cx="55" cy="55" r="48" fill="none" stroke="#E7E1D7" strokeWidth="10" />
               <circle
                 cx="55" cy="55" r="48"
                 fill="none"
@@ -133,14 +133,14 @@ const styles = {
   card: {
     background: "#fff",
     borderRadius: 20,
-    boxShadow: "0 4px 20px rgba(74,144,217,0.12)",
+    boxShadow: "0 4px 20px rgba(200,120,60,0.13)",
     overflow: "hidden",
   },
   hero: {
     textAlign: "center",
     padding: "2.5rem 2rem 2rem",
-    background: "linear-gradient(180deg, #F0F6FF 0%, #fff 100%)",
-    borderBottom: "1px solid #D9E4F0",
+    background: "linear-gradient(180deg, #F6F2EC 0%, #fff 100%)",
+    borderBottom: "1px solid #E7E1D7",
   },
   heroEmoji: {
     fontSize: "3rem",
@@ -177,10 +177,10 @@ const styles = {
     fontSize: "0.82rem",
     fontWeight: 600,
     color: "#4A5568",
-    background: "#F0F6FF",
+    background: "#F6F2EC",
     padding: "0.2rem 0.6rem",
     borderRadius: 20,
-    border: "1px solid #D9E4F0",
+    border: "1px solid #E7E1D7",
   },
   breakdown: {
     padding: "1.5rem 2rem",
@@ -188,7 +188,7 @@ const styles = {
   breakdownTitle: {
     fontFamily: "'Nunito', sans-serif",
     fontSize: "1.1rem",
-    color: "#1A2340",
+    color: "#2B2630",
     marginBottom: "1rem",
   },
   turnList: {
@@ -197,7 +197,7 @@ const styles = {
     gap: "0.75rem",
   },
   turnCard: {
-    background: "#F8FAFD",
+    background: "#F9F6F0",
     borderRadius: 12,
     padding: "0.9rem 1rem",
   },
@@ -238,7 +238,7 @@ const styles = {
   },
   turnPrompt: {
     fontSize: "0.9rem",
-    color: "#1A2340",
+    color: "#2B2630",
     marginBottom: "0.3rem",
     lineHeight: 1.4,
   },
@@ -255,27 +255,27 @@ const styles = {
   },
   turnLabel: {
     fontWeight: 700,
-    color: "#1A2340",
+    color: "#2B2630",
   },
   turnFeedback: {
     fontSize: "0.85rem",
     color: "#4A5568",
     fontStyle: "italic",
     marginTop: "0.4rem",
-    borderTop: "1px solid #E2EAF4",
+    borderTop: "1px solid #ECE6DC",
     paddingTop: "0.4rem",
   },
   actions: {
     display: "flex",
     gap: "0.75rem",
     padding: "1.5rem 2rem",
-    borderTop: "1px solid #D9E4F0",
+    borderTop: "1px solid #E7E1D7",
     flexWrap: "wrap",
   },
   replayBtn: {
     flex: 1,
     padding: "0.85rem",
-    background: "linear-gradient(135deg, #4A90D9, #2C6FAC)",
+    background: "linear-gradient(135deg, #E8823C, #C76A22)",
     color: "#fff",
     fontSize: "1rem",
     borderRadius: 12,
@@ -284,11 +284,11 @@ const styles = {
   newBtn: {
     flex: 1,
     padding: "0.85rem",
-    background: "#F0F6FF",
-    color: "#2C6FAC",
+    background: "#F6F2EC",
+    color: "#C76A22",
     fontSize: "1rem",
     borderRadius: 12,
-    border: "2px solid #4A90D9",
+    border: "2px solid #E8823C",
     minWidth: 160,
   },
 };

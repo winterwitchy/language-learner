@@ -16,14 +16,6 @@ const SCENARIO_LABELS = {
 };
 
 
-const LEVEL_COLORS = {
-  A1: { bg: "#E6F9F2", text: "#2A9468", border: "#3DBD8A" },
-  A2: { bg: "#EBF4FF", text: "#2C6FAC", border: "#4A90D9" },
-  B1: { bg: "#FEF6E7", text: "#B87A10", border: "#F5A623" },
-  B2: { bg: "#FEF0EE", text: "#C0392B", border: "#F26B5B" },
-};
-
-
 const styles = {
   wrapper: {
     display: "flex",
@@ -31,7 +23,7 @@ const styles = {
     height: "100vh",
     maxWidth: 1200,
     margin: "0 auto",
-    background: "#F0F6FF",
+    background: "#F6F2EC",
   },
   topBar: {
     display: "flex",
@@ -39,7 +31,7 @@ const styles = {
     justifyContent: "space-between",
     padding: "0.75rem 1rem",
     background: "#fff",
-    borderBottom: "1px solid #D9E4F0",
+    borderBottom: "1px solid #E7E1D7",
     gap: "0.5rem",
     flexShrink: 0,
   },
@@ -61,7 +53,7 @@ const styles = {
   scenarioTag: {
     fontWeight: 700,
     fontSize: "0.9rem",
-    color: "#1A2340",
+    color: "#2B2630",
   },
   levelBadge: {
     fontWeight: 800,
@@ -72,14 +64,14 @@ const styles = {
   langTag: {
     fontSize: "0.8rem",
     color: "#4A5568",
-    background: "#F0F6FF",
+    background: "#F6F2EC",
     padding: "0.15rem 0.5rem",
     borderRadius: 20,
   },
   scorePill: {
     fontWeight: 700,
     fontSize: "0.9rem",
-    color: "#1A2340",
+    color: "#2B2630",
     background: "#FEF6E7",
     padding: "0.3rem 0.7rem",
     borderRadius: 20,
@@ -88,7 +80,7 @@ const styles = {
   },
   progressTrack: {
     height: 5,
-    background: "#D9E4F0",
+    background: "#E7E1D7",
     flexShrink: 0,
   },
   progressFill: {
@@ -100,7 +92,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     height: "100vh",
-    background: "#F0F6FF",
+    background: "#F6F2EC",
   },
   chatArea: {
     flex: 1,
@@ -113,7 +105,7 @@ const styles = {
   inputArea: {
     padding: "0.75rem 2rem",
     background: "#fff",
-    borderTop: "1px solid #D9E4F0",
+    borderTop: "1px solid #E7E1D7",
     display: "flex",
     gap: "0.6rem",
     alignItems: "flex-end",
@@ -128,7 +120,7 @@ const styles = {
     width: 36,
     height: 36,
     borderRadius: "50%",
-    background: "linear-gradient(135deg, #4A90D9, #2C6FAC)",
+    background: "linear-gradient(135deg, #E8823C, #C76A22)",
     color: "#fff",
     fontWeight: 800,
     fontSize: "0.85rem",
@@ -151,11 +143,11 @@ const styles = {
   },
   npcBubble: {
     background: "#fff",
-    border: "1.5px solid #D9E4F0",
+    border: "1.5px solid #E7E1D7",
     borderRadius: "4px 16px 16px 16px",
     padding: "0.7rem 1rem",
     fontSize: "1rem",
-    color: "#1A2340",
+    color: "#2B2630",
     lineHeight: 1.5,
   },
   userRow: {
@@ -165,21 +157,21 @@ const styles = {
   },
   promptCard: {
     background: "#fff",
-    border: "2px dashed #4A90D9",
+    border: "2px dashed #6B4FD0",
     borderRadius: 14,
     padding: "0.8rem 1rem",
   },
   promptLabel: {
     fontSize: "0.72rem",
     fontWeight: 700,
-    color: "#4A90D9",
+    color: "#5135A8",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
     marginBottom: "0.3rem",
   },
   promptText: {
     fontSize: "0.95rem",
-    color: "#1A2340",
+    color: "#2B2630",
     fontWeight: 600,
     lineHeight: 1.5,
   },
@@ -247,7 +239,7 @@ const styles = {
   },
   feedbackText: {
     fontSize: "0.95rem",
-    color: "#1A2340",
+    color: "#2B2630",
     lineHeight: 1.5,
     marginBottom: "0.4rem",
   },
@@ -263,7 +255,7 @@ const styles = {
   },
   nextBtn: {
     padding: "0.5rem 1rem",
-    background: "linear-gradient(135deg, #4A90D9, #2C6FAC)",
+    background: "linear-gradient(135deg, #E8823C, #C76A22)",
     color: "#fff",
     fontSize: "0.9rem",
     borderRadius: 10,
@@ -273,7 +265,7 @@ const styles = {
   inputArea: {
     padding: "0.75rem 1rem",
     background: "#fff",
-    borderTop: "1px solid #D9E4F0",
+    borderTop: "1px solid #E7E1D7",
     display: "flex",
     gap: "0.6rem",
     alignItems: "flex-end",
@@ -286,13 +278,13 @@ const styles = {
     lineHeight: 1.5,
     borderRadius: 12,
     padding: "0.6rem 0.9rem",
-    border: "2px solid #D9E4F0",
+    border: "2px solid #E7E1D7",
     outline: "none",
     transition: "border-color 0.15s",
   },
   submitBtn: {
     padding: "0.6rem 1.2rem",
-    background: "linear-gradient(135deg, #4A90D9, #2C6FAC)",
+    background: "linear-gradient(135deg, #E8823C, #C76A22)",
     color: "#fff",
     fontSize: "1rem",
     borderRadius: 12,
@@ -349,7 +341,8 @@ export default function DialogueScreen({
   const scenario = sessionConfig?.scenario;
   const level = sessionConfig?.level;
   const language = sessionConfig?.language;
-  const levelColors = LEVEL_COLORS[level] ?? LEVEL_COLORS["A2"];
+  // Level badge is always purple (secondary accent), regardless of difficulty.
+  const levelColors = { bg: "#EFEAFB", text: "#5135A8", border: "#6B4FD0" };
   const progress = totalUserTurns > 0 ? (score.total / totalUserTurns) * 100 : 0;
 
   return (
@@ -376,7 +369,7 @@ export default function DialogueScreen({
         <div style={{
           ...styles.progressFill,
           width: `${progress}%`,
-          background: progress === 100 ? "#3DBD8A" : "#4A90D9",
+          background: progress === 100 ? "#3DBD8A" : "#E8823C",
         }} />
       </div>
       <div style={styles.chatArea}>
