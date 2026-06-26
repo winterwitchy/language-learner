@@ -31,6 +31,14 @@ const MAX_TURNS = 20;
 
 const DEFAULT_USER_ID = "000000";
 
+// The request's user identity. For this demo it comes from the X-User-Id header
+// (set by the login screen). In a real app this would be derived from an
+// authenticated session/token instead — the rest of the code is unchanged, which
+// is why all data access is scoped to this value (row-level security).
+function getUserId(req) {
+  return req.get("X-User-Id") || DEFAULT_USER_ID;
+}
+
 // Simple in-memory, per-IP fixed-window rate limiter — no external dependency.
 // Caps how often a client can hit the costly LLM routes, cutting API spend and
 // blocking runaway retries. For a multi-instance deployment, swap this for
@@ -190,7 +198,7 @@ function validateSetup({ scenario, level, language }, res) {
 
 // Create a new chat: generate the dialogue, persist it as turn rows, return state.
 app.post("/api/chats", llmLimiter, async (req, res) => {
-  const { scenario, level, language, userId, turns } = req.body;
+  const { scenario, level, language, turns } = req.body;
   if (!validateSetup({ scenario, level, language }, res)) return;
 
   if (turns !== undefined && turns !== null && (!Number.isInteger(turns) || turns < 1 || turns > MAX_TURNS)) {
@@ -203,7 +211,7 @@ app.post("/api/chats", llmLimiter, async (req, res) => {
   }
 
   const chatId = chatsRepo.createChat({
-    userId: userId || DEFAULT_USER_ID,
+    userId: getUserId(req),
     scenario,
     language,
     level,
@@ -224,7 +232,7 @@ app.post("/api/chats", llmLimiter, async (req, res) => {
 
 // List a user's previous chats (for the "previous chats" wrapper). Paginated.
 app.get("/api/chats", (req, res) => {
-  const userId = req.query.userId || DEFAULT_USER_ID;
+  const userId = getUserId(req);
   const status = req.query.status || null;
   const limit = Math.min(Number(req.query.limit) || 20, 100);
   const offset = Number(req.query.offset) || 0;
@@ -242,7 +250,8 @@ app.get("/api/chats", (req, res) => {
 app.get("/api/chats/:chatId", (req, res) => {
   const chatId = Number(req.params.chatId);
   const chat = chatsRepo.getChat(chatId);
-  if (!chat) return res.status(404).json({ error: "Chat not found." });
+  // RLS: only the owner may touch a chat. 404 (not 403) so we don't leak existence.
+  if (!chat || chat.user_id !== getUserId(req)) return res.status(404).json({ error: "Chat not found." });
 
   const turns = turnsRepo.getTurns(chatId);
   return res.json({
@@ -262,7 +271,8 @@ app.patch("/api/chats/:chatId", (req, res) => {
     return res.status(400).json({ error: "status must be active, completed, or abandoned." });
   }
   const chat = chatsRepo.getChat(chatId);
-  if (!chat) return res.status(404).json({ error: "Chat not found." });
+  // RLS: only the owner may touch a chat. 404 (not 403) so we don't leak existence.
+  if (!chat || chat.user_id !== getUserId(req)) return res.status(404).json({ error: "Chat not found." });
 
   // Don't downgrade a finished session.
   if (chat.status !== "completed") chatsRepo.setStatus(chatId, status);
@@ -274,7 +284,8 @@ app.patch("/api/chats/:chatId", (req, res) => {
 app.delete("/api/chats/:chatId", (req, res) => {
   const chatId = Number(req.params.chatId);
   const chat = chatsRepo.getChat(chatId);
-  if (!chat) return res.status(404).json({ error: "Chat not found." });
+  // RLS: only the owner may touch a chat. 404 (not 403) so we don't leak existence.
+  if (!chat || chat.user_id !== getUserId(req)) return res.status(404).json({ error: "Chat not found." });
 
   chatsRepo.deleteChat(chatId);
   return res.json({ chatId, deleted: true });
@@ -288,7 +299,8 @@ app.post("/api/chats/:chatId/turns/:turnId/answer", llmLimiter, async (req, res)
   const { answer } = req.body;
 
   const chat = chatsRepo.getChat(chatId);
-  if (!chat) return res.status(404).json({ error: "Chat not found." });
+  // RLS: only the owner may touch a chat. 404 (not 403) so we don't leak existence.
+  if (!chat || chat.user_id !== getUserId(req)) return res.status(404).json({ error: "Chat not found." });
 
   const turn = turnsRepo.getTurn(chatId, turnId);
   if (!turn || turn.task == null) {
@@ -361,7 +373,8 @@ app.post("/api/chats/:chatId/turns/:turnId/answer", llmLimiter, async (req, res)
 app.get("/api/chats/:chatId/report", async (req, res) => {
   const chatId = Number(req.params.chatId);
   const chat = chatsRepo.getChat(chatId);
-  if (!chat) return res.status(404).json({ error: "Chat not found." });
+  // RLS: only the owner may touch a chat. 404 (not 403) so we don't leak existence.
+  if (!chat || chat.user_id !== getUserId(req)) return res.status(404).json({ error: "Chat not found." });
 
   let report = reportsRepo.getReport(chatId);
   if (!report) {
@@ -396,7 +409,9 @@ app.get("/api/chats/:chatId/report", async (req, res) => {
 
 // Cumulative learner profile for a user in one language.
 app.get("/api/users/:userId/profile", async (req, res) => {
-  const userId = req.params.userId;
+  const userId = getUserId(req);
+  // RLS: you can only read your own profile.
+  if (req.params.userId !== userId) return res.status(403).json({ error: "Forbidden." });
   const language = req.query.language;
   const empty = { userId, language: language ?? null, summary: "", recurringPatterns: [], sessionsCount: 0 };
   if (!language) return res.json(empty);

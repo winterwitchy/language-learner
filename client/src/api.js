@@ -1,12 +1,26 @@
 const BASE = "/api";
 
-// Single placeholder user until a real login system is integrated. The backend
-// stores this on every chat as the seam for future per-user auth.
-export const USER_ID = "000000";
+// The current user identity, set by the login screen and stored locally. It's
+// sent as the X-User-Id header on every request; the server scopes all data to
+// it (row-level security). In a real app this would be an auth token instead.
+const USER_KEY = "dialogue_user_id";
+export function getCurrentUserId() {
+  return localStorage.getItem(USER_KEY) || "";
+}
+export function setCurrentUserId(id) {
+  localStorage.setItem(USER_KEY, id);
+}
+export function clearCurrentUserId() {
+  localStorage.removeItem(USER_KEY);
+}
 
 async function request(path, options = {}) {
   try {
-    const res = await fetch(`${BASE}${path}`, { cache: "no-store", ...options });
+    const res = await fetch(`${BASE}${path}`, {
+      cache: "no-store",
+      ...options,
+      headers: { "X-User-Id": getCurrentUserId(), ...(options.headers || {}) },
+    });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) return { ok: false, error: data.error ?? "Something went wrong." };
     return { ok: true, ...data };
@@ -16,11 +30,11 @@ async function request(path, options = {}) {
 }
 
 // Create a new chat (generates + persists the dialogue).
-export function createChat({ scenario, level, language, userId = USER_ID, turns }) {
+export function createChat({ scenario, level, language, turns }) {
   return request("/chats", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ scenario, level, language, userId, turns }),
+    body: JSON.stringify({ scenario, level, language, turns }),
   });
 }
 
@@ -29,9 +43,9 @@ export function getChat(chatId) {
   return request(`/chats/${chatId}`);
 }
 
-// A user's previous chats, newest first.
-export function listChats({ userId = USER_ID, limit = 20 } = {}) {
-  return request(`/chats?userId=${encodeURIComponent(userId)}&limit=${limit}`);
+// The current user's previous chats, newest first.
+export function listChats({ limit = 20 } = {}) {
+  return request(`/chats?limit=${limit}`);
 }
 
 // Submit + evaluate one answer.
@@ -62,7 +76,7 @@ export function getReport(chatId) {
   return request(`/chats/${chatId}/report`);
 }
 
-// Cumulative learner profile for a user in one language.
-export function getProfile(language, userId = USER_ID) {
-  return request(`/users/${encodeURIComponent(userId)}/profile?language=${encodeURIComponent(language)}`);
+// Cumulative learner profile for the current user in one language.
+export function getProfile(language) {
+  return request(`/users/${encodeURIComponent(getCurrentUserId())}/profile?language=${encodeURIComponent(language)}`);
 }

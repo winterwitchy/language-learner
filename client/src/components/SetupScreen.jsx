@@ -54,7 +54,7 @@ const LEVEL_LABELS = {
   B2: "Upper Intermediate",
 };
 
-export default function SetupScreen({ onStart, onResume }) {
+export default function SetupScreen({ onStart, onResume, userId, onSwitchUser }) {
   const [language, setLanguage] = useState("English");
   const [level, setLevel] = useState("A2");
   const [scenario, setScenario] = useState(null);
@@ -154,6 +154,16 @@ export default function SetupScreen({ onStart, onResume }) {
         <div style={styles.logo}>💬</div>
         <h1 style={styles.title}>Dialogue Practice</h1>
         <p style={styles.subtitle}>Pick a situation and start a real conversation!</p>
+        {userId && (
+          <div style={styles.userLine}>
+            Signed in as <strong>{userId}</strong>
+            {onSwitchUser && (
+              <button onClick={onSwitchUser} style={styles.switchBtn}>
+                Switch user
+              </button>
+            )}
+          </div>
+        )}
       </header>
 
       {profile && (profile.summary || profile.recurringPatterns?.length > 0) && (
@@ -328,6 +338,24 @@ const styles = {
   subtitle: {
     color: "#4A5568",
     fontSize: "1.1rem",
+  },
+  userLine: {
+    marginTop: "0.6rem",
+    fontSize: "0.85rem",
+    color: "#4A5568",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.6rem",
+  },
+  switchBtn: {
+    background: "transparent",
+    color: "#C76A22",
+    fontSize: "0.8rem",
+    fontWeight: 700,
+    border: "2px solid #E7E1D7",
+    borderRadius: 8,
+    padding: "0.2rem 0.6rem",
   },
   card: {
     background: "#FFFFFF",
