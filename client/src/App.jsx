@@ -1,5 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDialogue } from "./hooks/useDialogue";
+import { getCurrentUserId, setCurrentUserId, clearCurrentUserId } from "./api";
+import LoginScreen from "./components/LoginScreen";
 import SetupScreen from "./components/SetupScreen";
 import DialogueScreen from "./components/DialogueScreen";
 import ResultsScreen from "./components/ResultsScreen";
@@ -7,6 +9,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import ErrorScreen from "./components/ErrorScreen";
 
 export default function App() {
+  const [userId, setUserId] = useState(getCurrentUserId());
   const {
     status,
     visibleTurns,
@@ -23,17 +26,36 @@ export default function App() {
     sessionConfig,
     errorMessage,
     totalUserTurns,
+    chatId,
     start,
+    resume,
     submitAnswer,
     advance,
     reset,
+    leaveToChats,
   } = useDialogue();
 
   const handleReplay = useCallback(() => {
     if (sessionConfig) start(sessionConfig);
   }, [sessionConfig, start]);
 
-  if (status === "idle") return <SetupScreen onStart={start} />;
+  const handleLogin = useCallback((id) => {
+    setCurrentUserId(id);
+    setUserId(id);
+  }, []);
+
+  const switchUser = useCallback(() => {
+    clearCurrentUserId();
+    setUserId("");
+    reset();
+  }, [reset]);
+
+  // Gate the whole app behind a user id (stands in for real auth).
+  if (!userId) return <LoginScreen onLogin={handleLogin} />;
+
+  if (status === "idle") {
+    return <SetupScreen onStart={start} onResume={resume} userId={userId} onSwitchUser={switchUser} />;
+  }
   if (status === "loading") return <LoadingScreen sessionConfig={sessionConfig} />;
   if (status === "error") return <ErrorScreen message={errorMessage} onRetry={handleReplay} onReset={reset} />;
   if (status === "complete") return (
@@ -41,6 +63,7 @@ export default function App() {
       score={score}
       turnHistory={turnHistory}
       sessionConfig={sessionConfig}
+      chatId={chatId}
       onReplay={handleReplay}
       onReset={reset}
     />
@@ -64,6 +87,7 @@ export default function App() {
       onSubmit={submitAnswer}
       onAdvance={advance}
       onReset={reset}
+      onBackToChats={leaveToChats}
       npcName={npcName}
     />
   );
